@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   
-  std::vector<std::threads> threads;
+  std::vector<std::thread> threads;
   std::cout << "Waiting for a client to connect...\n";
   
   while (true){
