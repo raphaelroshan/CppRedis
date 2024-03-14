@@ -10,6 +10,7 @@
 #include <thread>
 #include <chrono>
 #include <sys/select.h>
+#include <pthread.h>
 
 
 void handleClient(int client_fd){
