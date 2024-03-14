@@ -71,14 +71,12 @@ int main(int argc, char **argv) {
     return 1;
   }
   
-  
-  
   std::cout << "Waiting for a client to connect...\n";
   
   while (true){
     struct sockaddr_in client_addr;
     int client_addr_len = sizeof(client_addr);
-    FD_ZERO(readfds);
+    FD_ZERO(&readfds);
     FD_SET(server_fd, &readfds);
 
     struct timeval timeout;
