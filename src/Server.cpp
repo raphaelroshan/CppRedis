@@ -52,7 +52,19 @@ int main(int argc, char **argv) {
   int client_fd = accept(server_fd, (struct sockaddr *) &client_addr, (socklen_t *) &client_addr_len);
   std::cout << "Client connected\n";
   const char *response ="+PONG\r\n";
-  send(client_fd, response, strlen(response), 0 );
+
+  while (true) {
+    char buffer[1024];
+    int bytes_received = recv(client_fd, buffer, 1024, 0);
+    if (bytes_received <= 0) {
+      std::cout << "Client disconnected\n";
+      break;
+    }
+    buffer[bytes_received] = '\0'
+    std::cout << "Received from client: " << buffer << std::endl;
+    send(client_fd, response, strlen(response), 0 );
+  
+  }
   
   close(server_fd);
 
