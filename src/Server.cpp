@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
       std::cout << "Client disconnected\n";
       break;
     }
-    buffer[bytes_received] = '\0'
+    buffer[bytes_received] = '\0';
     std::cout << "Received from client: " << buffer << std::endl;
     send(client_fd, response, strlen(response), 0 );
   
