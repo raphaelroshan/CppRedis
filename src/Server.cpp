@@ -62,7 +62,6 @@ void handleClient(int client_fd){
          // $3\r\nhey\r\n
          std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
          std::cout << "+" << echoRes << "+" << std::endl;
-1
          send(client_fd, echoRes, echoRes.length(), 0);
       }
    
