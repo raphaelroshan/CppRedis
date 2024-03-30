@@ -28,7 +28,7 @@ void handleClient(int client_fd){
     //test
     buffer[bytes_received] = '\0';
     std::string str(buffer, strlen(buffer)); 
-    std::vector<std::string> tokens = splitRedisCommand(convertedBuffer, "\r\n", 2);
+    std::vector<std::string> tokens = splitRedisCommand(str, "\r\n", 2);
     for (const std::string& token: tokens) {
         std::cout << "***" << token << "***" << std::endl;
     }
