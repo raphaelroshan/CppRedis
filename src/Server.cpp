@@ -57,12 +57,12 @@ void handleClient(int client_fd){
       if(lCommand == "ping") {
          std::string pongRes = "+PONG\r\n";
          std::cout << "+" << pongRes << "+" << std::endl;
-         send(client_fd, pongRes, pongRes.length(), 0);
+         send(client_fd, pongRes.data(), pongRes.length(), 0);
       } else if(lCommand == "echo") {
          // $3\r\nhey\r\n
          std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
          std::cout << "+" << echoRes << "+" << std::endl;
-         send(client_fd, echoRes, echoRes.length(), 0);
+         send(client_fd, echoRes.data(), echoRes.length(), 0);
       }
    
 
