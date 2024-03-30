@@ -27,7 +27,8 @@ void handleClient(int client_fd){
     }
     //test
     buffer[bytes_received] = '\0';
-    std::cout << "Received from client: " << buffer << std::endl;
+    std::string str(buffer, strlen(buffer)); 
+    std::cout << "Received from client: " << str << std::endl;
     send(client_fd, response, strlen(response), 0 );
   
   }
