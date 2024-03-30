@@ -28,14 +28,34 @@ void handleClient(int client_fd){
     //test
     buffer[bytes_received] = '\0';
     std::string str(buffer, strlen(buffer)); 
+    std::vector<std::string> tokens = splitRedisCommand(convertedBuffer, "\r\n", 2);
+    for (const std::string& token: tokens) {
+        std::cout << "***" << token << "***" << std::endl;
+    }
+
     std::cout << "Received from client: " << str << std::endl;
     send(client_fd, response, strlen(response), 0 );
+    
   
   }
   close(client_fd);
   
 }
 
+std::vector<std::string> splitRedisCommand(std::string input, std::string separator, int separatorLength ) {
+  std::size_t foundSeparator = input.find(separator);
+  std::vector<std::string> result;
+  if (foundSeparator == std::string::npos) {
+      result.push_back(input);
+  }
+  while (foundSeparator != std::string::npos) {
+      std::string splitOccurrence = input.substr(0, foundSeparator);
+      result.push_back(splitOccurrence);
+      input = input.substr(foundSeparator + separatorLength, input.length()-foundSeparator+separatorLength);
+      foundSeparator = input.find(separator);
+  }
+  return result;
+}
 
 int main(int argc, char **argv) {
   // You can use print statements as follows for debugging, they'll be visible when running tests.
