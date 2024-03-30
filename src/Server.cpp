@@ -42,6 +42,7 @@ void handleClient(int client_fd){
     //test
     buffer[bytes_received] = '\0';
     std::string str(buffer, strlen(buffer)); 
+    std::cout << "Received from client: " << str << std::endl;
     std::vector<std::string> tokens = splitRedisCommand(str, "\r\n", 2);
     for (const std::string& token: tokens) {
         std::cout << "***" << token << "***" << std::endl;
@@ -56,13 +57,13 @@ void handleClient(int client_fd){
       if(lCommand == "ping") {
          std::string pongRes = "+PONG\r\n";
          std::cout << "+" << pongRes << "+" << std::endl;
-         send(clientSocketId, pongRes.data(), pongRes.length(), 0);
+         send(client_fd, pongRes, pongRes.length(), 0);
       } else if(lCommand == "echo") {
          // $3\r\nhey\r\n
          std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
          std::cout << "+" << echoRes << "+" << std::endl;
 1
-         send(clientSocketId, echoRes.data(), echoRes.length(), 0);
+         send(client_fd, echoRes, echoRes.length(), 0);
       }
    
 
