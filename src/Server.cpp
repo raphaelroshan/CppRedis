@@ -25,6 +25,7 @@ void handleClient(int client_fd){
       std::cout << "Client disconnected\n";
       break;
     }
+    //test
     buffer[bytes_received] = '\0';
     std::cout << "Received from client: " << buffer << std::endl;
     send(client_fd, response, strlen(response), 0 );
