@@ -30,7 +30,7 @@ std::vector<std::string> splitRedisCommand(std::string input, std::string separa
 
 
 void handleClient(int client_fd){
-  const char *response ="+PONG\r\n";
+
 
   while (true) {
     char buffer[1024];
@@ -50,19 +50,25 @@ void handleClient(int client_fd){
     // Lowercase command
     std::string lCommand = "";
     for(auto c : tokens[2]) {
-        lCommand += tolower(c);
+      lCommand += tolower(c);
     }
 
     std::cout << "*" << lCommand << "*" << std::endl;
       if(lCommand == "ping") {
-         std::string pongRes = "+PONG\r\n";
-         std::cout << "+" << pongRes << "+" << std::endl;
-         send(client_fd, pongRes.data(), pongRes.length(), 0);
+        std::string pong = "+PONG\r\n";
+        std::cout << "+" << pong << "+" << std::endl;
+        send(client_fd, pong.data(), pong.length(), 0);
       } else if(lCommand == "echo") {
-         // $3\r\nhey\r\n
-         std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
-         std::cout << "+" << echoRes << "+" << std::endl;
-         send(client_fd, echoRes.data(), echoRes.length(), 0);
+        // $3\r\nhey\r\n
+        std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
+        std::cout << "+" << echoRes << "+" << std::endl;
+        send(client_fd, echoRes.data(), echoRes.length(), 0);
+      } else if (lcommand == "set") {
+        std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
+        std::cout << "+" << echoRes << "+" << std::endl;
+      } else if (lcommand == "get") {
+        std::string echoRes = tokens[3];
+        std::cout << "+" << echoRes << "+" << std::endl;
       }
    
 
@@ -72,25 +78,18 @@ void handleClient(int client_fd){
   
   }
   close(client_fd);
-  
 }
 
 
 
 int main(int argc, char **argv) {
-  // You can use print statements as follows for debugging, they'll be visible when running tests.
-  std::cout << "Logs from your program will appear here!\n";
-
-  // Uncomment this block to pass the first stage
-  //
   int server_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (server_fd < 0) {
    std::cerr << "Failed to create server socket\n";
    return 1;
   }
   
-  // Since the tester restarts your program quite often, setting SO_REUSEADDR
-  // ensures that we don't run into 'Address already in use' errors
+  // set SO_REUSEADDR to ensure that we don't run into 'Address already in use' errors when server restarts
   int reuse = 1;
   if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) < 0) {
     std::cerr << "setsockopt failed\n";
@@ -101,8 +100,6 @@ int main(int argc, char **argv) {
   server_addr.sin_family = AF_INET;
   server_addr.sin_addr.s_addr = INADDR_ANY;
   server_addr.sin_port = htons(6379);
-  //bool keep_running = true;
-  //const int TIMEOUT_SECONDS = 10; 
  
   
   if (bind(server_fd, (struct sockaddr *) &server_addr, sizeof(server_addr)) != 0) {
@@ -128,8 +125,6 @@ int main(int argc, char **argv) {
   }
   
   
-  
   close(server_fd);
-
   return 0;
 }
