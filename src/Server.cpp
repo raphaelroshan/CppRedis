@@ -29,9 +29,15 @@ std::vector<std::string> splitRedisCommand(std::string input, std::string separa
   return result;
 }
 
+struct ExpirableValue {
+    std::string value; 
+    std::chrono::system_clock::time_point expiryTime;
+    bool hasExpiry; 
+};
+
 
 void handleClient(int client_fd){
-  std::unordered_map<std::string, std::string> dict;
+  std::unordered_map<std::string, ExpirableValue> dict;
   std::string ok = "+OK\r\n";
   std::string pong = "+PONG\r\n";
   std::string failure = "$-1\r\n";
@@ -69,31 +75,50 @@ void handleClient(int client_fd){
         send(client_fd, echoRes.data(), echoRes.length(), 0);
 
       } else if (lCommand == "set") {
-        std::string tmp = tokens[5] + " " + tokens[6];
-        std::cout << tmp  << std::endl;
-        dict[tokens[4]] = tokens[5] + "\r\n" + tokens[6] + "\r\n";
+        std::string value = tokens[5] + "\r\n" + tokens[6] + "\r\n";
+        std::cout << value  << std::endl;
+        bool hasExpiry = false;
+        std::chrono::system_clock::time_point expiryTime; = std::chrono::system_clock::time_point();
+        
+
+        //if additional flags
+        if (tokens.length() > 6) {
+
+          //convert flag to lowercase
+          std::string flag = "";
+          for(auto c : tokens[6]) {
+            flag += tolower(c);
+          }
+
+          if (flag == "px"){
+            hasExpiry = true;
+            int expiryDelay = std::stoi(tokens[10]);
+            expiryTime = std::chrono::system_clock::now() + std::chrono::milliseconds(expiryDelay);
+          }
+        }
+
+        //add to dict with expiry
+        dict[tokens[4]] = {value, expiryTime, hasExpiry};
         send(client_fd, ok.data(), ok.length(), 0);
 
       } else if (lCommand == "get") {
         if (dict.count(tokens[4]) == 0) {
           send(client_fd, failure.data(), failure.length(), 0);
         } else {
-          std::string res = dict[tokens[4]];
-          send(client_fd, res.data(), res.length(), 0);
+          ExpirableValue res = dict[tokens[4]];
+          if (res.hasExpiry && std::chrono::system_clock::now() > val.expiryTime ) {
+            send(client_fd, failure.data(), failure.length(), 0);
+          } else {
+            send(client_fd, res.value.data(), res.value.length(), 0);
+          }          
         }
-
-      }
-   
+      }  
 
     // std::cout << "Received from client: " << str << std::endl;
     // send(client_fd, response, strlen(response), 0 );
-    
-  
   }
   close(client_fd);
 }
-
-
 
 int main(int argc, char **argv) {
   int server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -136,7 +161,6 @@ int main(int argc, char **argv) {
     std::cout << "Client connected\n";
     threads.emplace_back(handleClient, client_fd);
   }
-  
   
   close(server_fd);
   return 0;
