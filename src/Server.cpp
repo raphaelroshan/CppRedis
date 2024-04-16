@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_map>
 #include <cstdlib>
 #include <string>
 #include <cstring>
@@ -30,7 +31,10 @@ std::vector<std::string> splitRedisCommand(std::string input, std::string separa
 
 
 void handleClient(int client_fd){
-
+  std::unordered_map<std::string, std::string> dict;
+  std::string ok = "+OK\r\n";
+  std::string pong = "+PONG\r\n";
+  std::string failure = "$-1\r\n";
 
   while (true) {
     char buffer[1024];
@@ -47,7 +51,7 @@ void handleClient(int client_fd){
     for (const std::string& token: tokens) {
         std::cout << "***" << token << "***" << std::endl;
     }
-    // Lowercase command
+    // Construct Lowercase command
     std::string lCommand = "";
     for(auto c : tokens[2]) {
       lCommand += tolower(c);
@@ -55,20 +59,28 @@ void handleClient(int client_fd){
 
     std::cout << "*" << lCommand << "*" << std::endl;
       if(lCommand == "ping") {
-        std::string pong = "+PONG\r\n";
         std::cout << "+" << pong << "+" << std::endl;
         send(client_fd, pong.data(), pong.length(), 0);
+
       } else if(lCommand == "echo") {
         // $3\r\nhey\r\n
         std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
         std::cout << "+" << echoRes << "+" << std::endl;
         send(client_fd, echoRes.data(), echoRes.length(), 0);
+
       } else if (lCommand == "set") {
-        std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
-        std::cout << "+" << echoRes << "+" << std::endl;
+        std::string tmp = tokens[4] + " " + tokens[6];
+        std::cout << tmp  << std::endl;
+        dict[tokens[4]] = tokens[6];
+        send(client_fd, ok.data(), ok.length(), 0);
+
       } else if (lCommand == "get") {
-        std::string echoRes = tokens[3];
-        std::cout << "+" << echoRes << "+" << std::endl;
+        if (dict.count(tokens[4]) == 0) {
+          send(client_fd, failure.data(), failure.length(), 0);
+        } else {
+          send(client_fd, dict[tokens[4]].data(), dict[tokens[4]].length(), 0);
+        }
+
       }
    
 
