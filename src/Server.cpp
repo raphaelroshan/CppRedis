@@ -31,7 +31,7 @@ std::vector<std::string> splitRedisCommand(std::string input, std::string separa
 
 struct ExpirableValue {
     std::string value; 
-    std::chrono::system_clock expiryTime;
+    std::chrono::time_point<std::chrono::system_clock> expiryTime;
     bool hasExpiry; 
 };
 
@@ -78,7 +78,7 @@ void handleClient(int client_fd){
         std::string value = tokens[5] + "\r\n" + tokens[6] + "\r\n";
         std::cout << value  << std::endl;
         bool hasExpiry = false;
-        std::chrono::system_clock expiryTime = std::chrono::system_clock::time_point();
+        std::chrono::time_point<std::chrono::system_clock> expiryTime = std::chrono::system_clock::now();
         
 
         //if additional flags
@@ -106,11 +106,7 @@ void handleClient(int client_fd){
           send(client_fd, failure.data(), failure.length(), 0);
         } else {
           ExpirableValue res = dict[tokens[4]];
-
-          
-          // std::cout << std::chrono::system_clock::now() << " UTC\n";
-
-          if (res.hasExpiry && std::chrono::system_clock::now() > res.expiryTime ) {
+          if ((res.hasExpiry) && (std::chrono::system_clock::now() > res.expiryTime)) {
             std::cout << "expiry and failure"  << std::endl;
             send(client_fd, failure.data(), failure.length(), 0);
           } else {
