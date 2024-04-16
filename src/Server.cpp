@@ -78,11 +78,11 @@ void handleClient(int client_fd){
         std::string value = tokens[5] + "\r\n" + tokens[6] + "\r\n";
         std::cout << value  << std::endl;
         bool hasExpiry = false;
-        std::chrono::system_clock::time_point expiryTime; = std::chrono::system_clock::time_point();
+        std::chrono::system_clock::time_point expiryTime = std::chrono::system_clock::time_point();
         
 
         //if additional flags
-        if (tokens.length() > 6) {
+        if (tokens.size() > 6) {
 
           //convert flag to lowercase
           std::string flag = "";
@@ -106,7 +106,7 @@ void handleClient(int client_fd){
           send(client_fd, failure.data(), failure.length(), 0);
         } else {
           ExpirableValue res = dict[tokens[4]];
-          if (res.hasExpiry && std::chrono::system_clock::now() > val.expiryTime ) {
+          if (res.hasExpiry && std::chrono::system_clock::now() > res.expiryTime ) {
             send(client_fd, failure.data(), failure.length(), 0);
           } else {
             send(client_fd, res.value.data(), res.value.length(), 0);
