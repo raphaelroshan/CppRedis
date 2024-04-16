@@ -82,7 +82,7 @@ void handleClient(int client_fd){
         
 
         //if additional flags
-        if (tokens.size() > 6) {
+        if (tokens.size() > 8) {
 
           //convert flag to lowercase
           std::string flag = "";
