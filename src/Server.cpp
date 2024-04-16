@@ -78,7 +78,8 @@ void handleClient(int client_fd){
         if (dict.count(tokens[4]) == 0) {
           send(client_fd, failure.data(), failure.length(), 0);
         } else {
-          send(client_fd, dict[tokens[4]].data(), dict[tokens[4]].length(), 0);
+          std::string res = "$" + dict[tokens[4]].length() + "\r\n" + dict[tokens[4]] + "\r\n"
+          send(client_fd, res.data(), res.length(), 0);
         }
 
       }
