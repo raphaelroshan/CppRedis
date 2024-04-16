@@ -63,10 +63,10 @@ void handleClient(int client_fd){
         std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
         std::cout << "+" << echoRes << "+" << std::endl;
         send(client_fd, echoRes.data(), echoRes.length(), 0);
-      } else if (lcommand == "set") {
+      } else if (lCommand == "set") {
         std::string echoRes = tokens[3] + "\r\n"  + tokens[4] + "\r\n";
         std::cout << "+" << echoRes << "+" << std::endl;
-      } else if (lcommand == "get") {
+      } else if (lCommand == "get") {
         std::string echoRes = tokens[3];
         std::cout << "+" << echoRes << "+" << std::endl;
       }
