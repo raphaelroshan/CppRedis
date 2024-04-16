@@ -89,7 +89,7 @@ void handleClient(int client_fd){
           for(auto c : tokens[6]) {
             flag += tolower(c);
           }
-          std::cout << flag << std::endl;
+          std::cout <<"this is the flag encountered" << flag << std::endl;
 
           if (flag == "px"){
             hasExpiry = true;
