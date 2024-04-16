@@ -86,15 +86,15 @@ void handleClient(int client_fd){
 
           //convert flag to lowercase
           std::string flag = "";
-          for(auto c : tokens[2]) {
+          for(auto c : tokens[8]) {
             flag += tolower(c);
           }
           std::cout <<"this is the flag encountered" << flag << std::endl;
 
           if (flag == "px"){
             hasExpiry = true;
-            std::cout << "entered px flag with time" << tokens[3]  << std::endl;
-            int expiryDelay = std::stoi(tokens[3]);
+            std::cout << "entered px flag with time" << tokens[10]  << std::endl;
+            int expiryDelay = std::stoi(tokens[10]);
 
             expiryTime = std::chrono::system_clock::now() + std::chrono::milliseconds(expiryDelay);
             
