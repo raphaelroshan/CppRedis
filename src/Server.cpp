@@ -106,8 +106,15 @@ void handleClient(int client_fd){
           send(client_fd, failure.data(), failure.length(), 0);
         } else {
           ExpirableValue res = dict[tokens[4]];
-          std::cout << res.expiryTime  << std::endl;
-          std::cout << std::chrono::system_clock::now()  << std::endl;
+
+          // Convert time_point objects to std::time_t 
+          std::time_t expiryTime_t = std::chrono::system_clock::to_time_t(res.expiryTime);
+          std::time_t currentTime_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
+          // Print with a specific format (e.g., %Y-%m-%d %H:%M:%S)
+          std::cout << "Expiry Time: " << std::put_time(std::localtime(&expiryTime_t), "%Y-%m-%d %H:%M:%S") << '\n';
+          std::cout << "Current Time: " << std::put_time(std::localtime(&currentTime_t), "%Y-%m-%d %H:%M:%S") << '\n';
+          
           if (res.hasExpiry && std::chrono::system_clock::now() > res.expiryTime ) {
             std::cout << "expiry and failure"  << std::endl;
             send(client_fd, failure.data(), failure.length(), 0);
