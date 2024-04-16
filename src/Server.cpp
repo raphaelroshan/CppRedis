@@ -31,7 +31,7 @@ std::vector<std::string> splitRedisCommand(std::string input, std::string separa
 
 struct ExpirableValue {
     std::string value; 
-    std::chrono::system_clock::time_point expiryTime;
+    std::chrono::system_clock expiryTime;
     bool hasExpiry; 
 };
 
