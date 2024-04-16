@@ -89,14 +89,12 @@ void handleClient(int client_fd){
           for(auto c : tokens[8]) {
             flag += tolower(c);
           }
-          std::cout <<"this is the flag encountered" << flag << std::endl;
-          std::cout <<"this is at pos 9" << tokens[9] << std::endl;
-          std::cout <<"this is at pos 10" << tokens[10] << std::endl;
+          std::cout <<"flag encountered" << flag << std::endl;
 
           if (flag == "px"){
             hasExpiry = true;
-            std::cout << "entered px flag with time" << tokens[3]  << std::endl;
-            int expiryDelay = std::stoi(tokens[3]);
+            std::cout << "entered px flag with time" << tokens[10]  << std::endl;
+            int expiryDelay = std::stoi(tokens[10]);
 
             expiryTime = std::chrono::system_clock::now() + std::chrono::milliseconds(expiryDelay);
             
