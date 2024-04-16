@@ -86,13 +86,12 @@ void handleClient(int client_fd){
 
           //convert flag to lowercase
           std::string flag = "";
-          for(auto c : tokens[4]) {
+          for(auto c : tokens[8]) {
             flag += tolower(c);
           }
           std::cout <<"this is the flag encountered" << flag << std::endl;
-          std::cout <<"this is at pos 5" << tokens[5] << std::endl;
-          std::cout <<"this is at pos 6" << tokens[6] << std::endl;
-          std::cout <<"this is at pos 7" << tokens[7] << std::endl;
+          std::cout <<"this is at pos 9" << tokens[9] << std::endl;
+          std::cout <<"this is at pos 10" << tokens[10] << std::endl;
 
           if (flag == "px"){
             hasExpiry = true;
