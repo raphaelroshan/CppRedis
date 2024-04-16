@@ -107,6 +107,7 @@ void handleClient(int client_fd){
         } else {
           ExpirableValue res = dict[tokens[4]];
           if (res.hasExpiry && std::chrono::system_clock::now() > res.expiryTime ) {
+            std::cout << "expiry and failure"  << std::endl;
             send(client_fd, failure.data(), failure.length(), 0);
           } else {
             send(client_fd, res.value.data(), res.value.length(), 0);
