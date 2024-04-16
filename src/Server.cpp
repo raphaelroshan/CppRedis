@@ -69,7 +69,7 @@ void handleClient(int client_fd){
         send(client_fd, echoRes.data(), echoRes.length(), 0);
 
       } else if (lCommand == "set") {
-        std::string tmp = tokens[4] + " " + tokens[6];
+        std::string tmp = tokens[5] + " " + tokens[6];
         std::cout << tmp  << std::endl;
         dict[tokens[4]] = tokens[5] + "\r\n" + tokens[6] + "\r\n";
         send(client_fd, ok.data(), ok.length(), 0);
