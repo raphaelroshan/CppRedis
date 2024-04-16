@@ -63,7 +63,7 @@ void handleClient(int client_fd){
       lCommand += tolower(c);
     }
 
-    std::cout << "*" << lCommand << "*" << std::endl;
+    // std::cout << "*" << lCommand << "*" << std::endl;
       if(lCommand == "ping") {
         std::cout << "+" << pong << "+" << std::endl;
         send(client_fd, pong.data(), pong.length(), 0);
@@ -89,11 +89,15 @@ void handleClient(int client_fd){
           for(auto c : tokens[6]) {
             flag += tolower(c);
           }
+          std::cout << flag << std::endl;
 
           if (flag == "px"){
             hasExpiry = true;
+            std::cout << "entered px flag" << tokens[10]  << std::endl;
             int expiryDelay = std::stoi(tokens[10]);
+
             expiryTime = std::chrono::system_clock::now() + std::chrono::milliseconds(expiryDelay);
+            
           }
         }
 
