@@ -71,14 +71,14 @@ void handleClient(int client_fd){
       } else if (lCommand == "set") {
         std::string tmp = tokens[4] + " " + tokens[6];
         std::cout << tmp  << std::endl;
-        dict[tokens[4]] = tokens[6];
+        dict[tokens[4]] = tokens[5] + "\r\n" + tokens[6] + "\r\n";
         send(client_fd, ok.data(), ok.length(), 0);
 
       } else if (lCommand == "get") {
         if (dict.count(tokens[4]) == 0) {
           send(client_fd, failure.data(), failure.length(), 0);
         } else {
-          std::string res = "$" + dict[tokens[4]].length() + "\r\n" + dict[tokens[4]] + "\r\n"
+          std::string res = dict[tokens[4]];
           send(client_fd, res.data(), res.length(), 0);
         }
 
